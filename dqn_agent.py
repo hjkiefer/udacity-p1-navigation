@@ -7,20 +7,23 @@ from model import QNetwork
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
-
-BUFFER_SIZE = int(1e5)  # replay buffer size
-BATCH_SIZE = 64         # minibatch size
-GAMMA = 0.99            # discount factor
-TAU = 1e-3              # for soft update of target parameters
-LR = 5e-4               # learning rate 
-UPDATE_EVERY = 4        # how often to update the network
+default_agent_config = {
+    "BUFFER_SIZE": int(1e6),  # replay buffer size
+    "BATCH_SIZE": 64,         # minibatch size
+    "GAMMA": 0.99,            # discount factor
+    "TAU": 5e-5,              # for soft update of target parameters
+    "LR": 25e-4,              # learning rate 
+    "UPDATE_EVERY": 16,       # how often to update the network
+    "N_LEARN_UPDATES": 1,     # How many iterations for training on the minibatch
+    "hidden_layer_neurons": [32,16,8]
+}
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 class Agent():
     """Interacts with and learns from the environment."""
 
-    def __init__(self, state_size, action_size, seed):
+    def __init__(self, state_size, action_size, seed, config={}, qnetwork_function=QNetwork):
         """Initialize an Agent object.
         
         Params
@@ -32,28 +35,43 @@ class Agent():
         self.state_size = state_size
         self.action_size = action_size
         self.seed = random.seed(seed)
-
+        
+        # Setup config
+        agent_config = default_agent_config
+        agent_config.update(config)
+        self.agent_config = agent_config
+        hidden_layers = self.agent_config["hidden_layer_neurons"]
         # Q-Network
-        self.qnetwork_local = QNetwork(state_size, action_size, seed).to(device)
-        self.qnetwork_target = QNetwork(state_size, action_size, seed).to(device)
-        self.optimizer = optim.Adam(self.qnetwork_local.parameters(), lr=LR)
+        self.qnetwork_local  = qnetwork_function(state_size=state_size, 
+                                                 action_size=action_size, 
+                                                 seed=seed,
+                                                 hidden_layer_neurons=hidden_layers
+                                                ).to(device)
+        self.qnetwork_target = qnetwork_function(state_size=state_size, 
+                                                 action_size=action_size, 
+                                                 seed=seed,
+                                                 hidden_layer_neurons=hidden_layers
+                                                ).to(device)
+        self.optimizer = optim.Adam(self.qnetwork_local.parameters(), lr=self.agent_config["LR"])
 
         # Replay memory
-        self.memory = ReplayBuffer(action_size, BUFFER_SIZE, BATCH_SIZE, seed)
+        self.memory = ReplayBuffer(action_size, self.agent_config["BUFFER_SIZE"], self.agent_config["BATCH_SIZE"], seed)
         # Initialize time step (for updating every UPDATE_EVERY steps)
         self.t_step = 0
+
     
     def step(self, state, action, reward, next_state, done):
         # Save experience in replay memory
         self.memory.add(state, action, reward, next_state, done)
         
         # Learn every UPDATE_EVERY time steps.
-        self.t_step = (self.t_step + 1) % UPDATE_EVERY
+        self.t_step = (self.t_step + 1) % self.agent_config["UPDATE_EVERY"]
         if self.t_step == 0:
             # If enough samples are available in memory, get random subset and learn
-            if len(self.memory) > BATCH_SIZE:
+            if len(self.memory) > self.agent_config["BATCH_SIZE"]:
                 experiences = self.memory.sample()
-                self.learn(experiences, GAMMA)
+                for l in range(self.agent_config["N_LEARN_UPDATES"]):
+                    self.learn(experiences, self.agent_config["GAMMA"])
 
     def act(self, state, eps=0.):
         """Returns actions for given state as per current policy.
@@ -84,9 +102,7 @@ class Agent():
             gamma (float): discount factor
         """
         states, actions, rewards, next_states, dones = experiences
-
-        states, actions, rewards, next_states, dones = experiences
-
+        
         # Get max predicted Q values (for next states) from target model
         Q_targets_next = self.qnetwork_target(next_states).detach().max(1)[0].unsqueeze(1)
         # Compute Q targets for current states 
@@ -101,7 +117,7 @@ class Agent():
         self.optimizer.step()
 
         # ------------------- update target network ------------------- #
-        self.soft_update(self.qnetwork_local, self.qnetwork_target, TAU)                     
+        self.soft_update(self.qnetwork_local, self.qnetwork_target, self.agent_config["TAU"])                     
 
     def soft_update(self, local_model, target_model, tau):
         """Soft update model parameters.
@@ -156,3 +172,4 @@ class ReplayBuffer:
     def __len__(self):
         """Return the current size of internal memory."""
         return len(self.memory)
+
