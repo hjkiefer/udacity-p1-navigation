@@ -31,4 +31,8 @@ Optionally, you can attempt to install the dependencies yourself by following th
 [udacity drl github repo](https://github.com/udacity/deep-reinforcement-learning#dependencies)
 
 ## Training the agent
-Run the code in the [Navigation.ipynb](Navigation.ipynb) to train the agent. This loads models from [models.py](models.py) loads the agent from [dqn_agent.py](dqn_agent.py)
+
+Run the code in the [Navigation.ipynb](Navigation.ipynb) to train the agent.
+This loads models from [model.py](model.py) and loads the agent from
+[dqn_agent.py](dqn_agent.py) and finally runs a training loop which end swhen
+the environment has been solved.
