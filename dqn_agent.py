@@ -15,7 +15,8 @@ default_agent_config = {
     "LR": 25e-4,              # learning rate 
     "UPDATE_EVERY": 16,       # how often to update the network
     "N_LEARN_UPDATES": 1,     # How many iterations for training on the minibatch
-    "hidden_layer_neurons": [32,16,8]
+    "hidden_layer_neurons": [32,16,8],
+    "qnetwork_function": QNetwork
 }
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -23,7 +24,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 class Agent():
     """Interacts with and learns from the environment."""
 
-    def __init__(self, state_size, action_size, seed, config={}, qnetwork_function=QNetwork):
+    def __init__(self, state_size, action_size, seed, config={}):
         """Initialize an Agent object.
         
         Params
@@ -41,7 +42,10 @@ class Agent():
         agent_config.update(config)
         self.agent_config = agent_config
         hidden_layers = self.agent_config["hidden_layer_neurons"]
+        
+        # Setup the qnetwork functions and store them in the agent.
         # Q-Network
+        qnetwork_function = config["qnetwork_function"]
         self.qnetwork_local  = qnetwork_function(state_size=state_size, 
                                                  action_size=action_size, 
                                                  seed=seed,
@@ -54,7 +58,7 @@ class Agent():
                                                 ).to(device)
         self.optimizer = optim.Adam(self.qnetwork_local.parameters(), lr=self.agent_config["LR"])
 
-        # Replay memory
+        # Initialize replay memory
         self.memory = ReplayBuffer(action_size, self.agent_config["BUFFER_SIZE"], self.agent_config["BATCH_SIZE"], seed)
         # Initialize time step (for updating every UPDATE_EVERY steps)
         self.t_step = 0
@@ -172,4 +176,3 @@ class ReplayBuffer:
     def __len__(self):
         """Return the current size of internal memory."""
         return len(self.memory)
-
