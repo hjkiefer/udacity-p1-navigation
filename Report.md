@@ -54,9 +54,17 @@ gradients, and aids in training a deeper neural network effeciently.
 
 ## Future Work
 
-It would be interesting to try more advanced methods to asses whether an even
-faster agent training is possible. Or maybe check different methods to maximise
-the overall best average score achievable.
+During the exploration track I found on several occasions, that the agent had a
+hard time picking up speed on training. In particular, it seemed that for a
+long time, episodes with 0 reward kept appearing. It would be interesting to
+check whether prioritized experience replay could avoid such episodes, or even
+improve learning speed. 
+
+It would also be a blast to try different methods for getting the overall
+highest performance, not just beating a score of 13, but trying to maximise the
+overall score, say on a 2000 episode training run. Here it would be possible to
+benchmark different algorithm improvements against each other, fx Double DQN or
+dueling DQN, or mixtures of these with/without prioritized experience replay.
 
 # References
 
