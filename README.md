@@ -2,24 +2,28 @@
 
 ## Introduction
 
-In this project, an agent was trained to collect bananas, in a square world.
+This project is about training and agent to collect bananas. The environment is
+a square world, where yellow and blue bananas are to be collected. 
 
-A reward of +1 is provided for collecting a yellow banana, and a reward of -1
-is provided for collecting a blue banana.  Thus, the goal of the agent is to
-collect as many yellow bananas as possible while avoiding blue bananas. 
+The agent is rewards with a +1 reward for collecting yellow bananas, and a -1
+reward for collecting a blue banana. As the agent tries to maximise the
+cumulative reward, it should collect yellow bananas, and avoid blue bananas.
 
-The state space has 37 dimensions and contains the agent's velocity, along with
-ray-based perception of objects around agent's forward direction.  Given this
-information, the agent has to learn how to best select actions.  Four discrete
-actions are available, corresponding to:
+The environment state is a preprocessed view with is consist of the agent's
+velocity and ray-based perception around the agents forward direction. This
+state is prepared by the environment, and we are thus not working with the
+pixel view that we (humans) are seeing.
+
+The agent have 4 actions available:
 
 - **`0`** - move forward.
 - **`1`** - move backward.
 - **`2`** - turn left.
 - **`3`** - turn right.
 
-The task is episodic, and in order to solve the environment, the agent must get
-an average score of +13 over 100 consecutive episodes.
+Each episode consist of a defined number of actions, and the agent must get an
+average score of +13 over 100 consecutive episodes in order to solve the
+environment.
 
 ## Setting up your environment
 

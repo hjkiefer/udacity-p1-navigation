@@ -22,7 +22,7 @@ replay buffer.
 ### Hyper-parameters
 
 Agent hyper parameters were not tuned significantly. They were chosen close to
-the Nature paper [1]
+the values used in [1]:
 
 	Buffer_size = 1e5
 	batch_size = 32
@@ -57,3 +57,7 @@ gradients, and aids in training a deeper neural network effeciently.
 It would be interesting to try more advanced methods to asses whether an even
 faster agent training is possible. Or maybe check different methods to maximise
 the overall best average score achievable.
+
+# References
+
+[1] Mnih, V., Kavukcuoglu, K., Silver, D. et al. Human-level control through deep reinforcement learning. Nature 518, 529–533 (2015). https://doi.org/10.1038/nature14236
