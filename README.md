@@ -21,10 +21,14 @@ actions are available, corresponding to:
 The task is episodic, and in order to solve the environment, the agent must get
 an average score of +13 over 100 consecutive episodes.
 
-## Training the agent
+## Setting up your environment
 
 It has not been possible to setup the environment locally due to setup issues
-with old versions of the unity environment, so it is necessary to run it in the
-Udacity provided cloud VM.
+with old versions of the unity environment, so for me, it was necessary to run it in the
+Udacity provided cloud VM which has all dependencies already installed. 
 
-Run the code in the `Navigation.ipynb` to train the agent.
+Optionally, you can attempt to install the dependencies yourself by following the guide here
+[udacity drl github repo](https://github.com/udacity/deep-reinforcement-learning#dependencies)
+
+## Training the agent
+Run the code in the [Navigation.ipynb](Navigation.ipynb) to train the agent. This loads models from [models.py](models.py) loads the agent from [dqn_agent.py](dqn_agent.py)
