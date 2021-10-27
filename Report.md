@@ -63,9 +63,13 @@ improve learning speed.
 It would also be a blast to try different methods for getting the overall
 highest performance, not just beating a score of 13, but trying to maximise the
 overall score, say on a 2000 episode training run. Here it would be possible to
-benchmark different algorithm improvements against each other, fx Double DQN or
-dueling DQN, or mixtures of these with/without prioritized experience replay.
+benchmark different algorithm improvements against each other, fx Double DQN [2] or
+dueling DQN [3], or mixtures of these with/without prioritized experience replay.
 
 # References
 
 [1] Mnih, V., Kavukcuoglu, K., Silver, D. et al. Human-level control through deep reinforcement learning. Nature 518, 529–533 (2015). https://doi.org/10.1038/nature14236
+
+[2] van Hasselt, H. et al. Deep Reinforcement Learning with Double Q-learning. arXiv:1509.06461
+
+[3] Wang, Z. et al. Dueling Network Architectures for Deep Reinforcement Learning. arXiv:1511.06581
